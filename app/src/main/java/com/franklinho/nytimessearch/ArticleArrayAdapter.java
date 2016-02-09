@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -52,6 +53,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
             i.putExtra("article", article);
             // launch the activity
             context.startActivity(i);
+
         }
 
     }
@@ -68,20 +70,29 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         Article article = mArticles.get(position);
 
 
         TextView textView = holder.tvTitle;
-        ImageView imageView = holder.ivImage;
+        final ImageView imageView = holder.ivImage;
         holder.article = article;
 
         imageView.setImageResource(0);
         textView.setText(article.getHeadline());
 
-        String thumbnail = article.getThumbNail();
+        final String thumbnail = article.getThumbNail();
         if (!TextUtils.isEmpty(thumbnail)) {
-            Picasso.with(holder.context).load(thumbnail).into(imageView);
+            imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    Picasso.with(holder.context).load(thumbnail).resize(imageView.getWidth(), 0).into(imageView);
+                }
+
+
+            });
+
 
         }
 
