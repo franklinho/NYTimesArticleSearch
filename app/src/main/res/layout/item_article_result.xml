@@ -15,6 +15,5 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvTitle"
         android:text="TextView"
-        android:maxLines="2"
         android:ellipsize="end"/>
 </LinearLayout>

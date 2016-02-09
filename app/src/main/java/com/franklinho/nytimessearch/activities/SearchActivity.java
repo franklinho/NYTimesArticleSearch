@@ -1,17 +1,16 @@
 package com.franklinho.nytimessearch.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 
 import com.franklinho.nytimessearch.Article;
 import com.franklinho.nytimessearch.ArticleArrayAdapter;
@@ -33,7 +32,7 @@ import cz.msebera.android.httpclient.Header;
 public class SearchActivity extends AppCompatActivity {
 
     @Bind(R.id.etQuery) EditText etQuery;
-    @Bind(R.id.gvResults) GridView gvResults;
+    @Bind(R.id.rvResults) RecyclerView rvResults;
     @Bind(R.id.btnSearch) Button btnSearch;
     String NYTIMES_API_KEY = "3c6aa034b9301a603f43fdc6ce4ef667:5:74335560";
     ArrayList<Article> articles;
@@ -48,21 +47,22 @@ public class SearchActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         articles = new ArrayList<>();
-        adapter = new ArticleArrayAdapter(this, articles);
-        gvResults.setAdapter(adapter);
-        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // create an intent to display the article
-                Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
-                //get the article to display
-                Article article = articles.get(position);
-                // pass article into intent
-                i.putExtra("article", article);
-                // launch the activity
-                startActivity(i);
-            }
-        });
+        adapter = new ArticleArrayAdapter(articles);
+        rvResults.setAdapter(adapter);
+        rvResults.setLayoutManager(new StaggeredGridLayoutManager(2,1));
+//        rvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                // create an intent to display the article
+//                Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
+//                //get the article to display
+//                Article article = articles.get(position);
+//                // pass article into intent
+//                i.putExtra("article", article);
+//                // launch the activity
+//                startActivity(i);
+//            }
+//        });
 
         requestArticles(0);
     }
@@ -91,7 +91,7 @@ public class SearchActivity extends AppCompatActivity {
 
     public void requestArticles(int page) {
         if (page == 0) {
-            adapter.clear();
+            articles.clear();
         }
         String query = etQuery.getText().toString();
 //        Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show();
@@ -110,8 +110,9 @@ public class SearchActivity extends AppCompatActivity {
                 JSONArray articleJsonResults = null;
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
-                    Log.d("DEBUG",articles.toString());
+                    articles.addAll(Article.fromJSONArray(articleJsonResults));
+                    Log.d("DEBUG", articles.toString());
+                    adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
