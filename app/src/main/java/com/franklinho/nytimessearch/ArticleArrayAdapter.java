@@ -1,6 +1,7 @@
 package com.franklinho.nytimessearch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.franklinho.nytimessearch.activities.ArticleActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -26,15 +28,30 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
         mArticles = articles;
     }
 
-    public static class ViewHolder extends  RecyclerView.ViewHolder {
+    public static class ViewHolder extends  RecyclerView.ViewHolder  implements  View.OnClickListener {
         public ImageView ivImage;
         public TextView tvTitle;
+        private Context context;
+        public Article article;
 
         public ViewHolder(View itemView) {
             super (itemView);
 
+            context=itemView.getContext();
             tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
             ivImage = (ImageView) itemView.findViewById(R.id.ivImage);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = getLayoutPosition(); // gets item position
+            Intent i = new Intent(context, ArticleActivity.class);
+            //get the article to display
+            // pass article into intent
+            i.putExtra("article", article);
+            // launch the activity
+            context.startActivity(i);
         }
 
     }
@@ -54,15 +71,17 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         Article article = mArticles.get(position);
 
+
         TextView textView = holder.tvTitle;
         ImageView imageView = holder.ivImage;
+        holder.article = article;
 
         imageView.setImageResource(0);
         textView.setText(article.getHeadline());
 
         String thumbnail = article.getThumbNail();
         if (!TextUtils.isEmpty(thumbnail)) {
-            Picasso.with(holder.itemView.getContext()).load(thumbnail).into(imageView);
+            Picasso.with(holder.context).load(thumbnail).into(imageView);
 
         }
 
