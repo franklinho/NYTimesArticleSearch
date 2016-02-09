@@ -17,5 +17,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvTitle"
         android:text="TextView"
-        android:ellipsize="end"/>
+        android:ellipsize="end"
+        android:textColor="@android:color/black"
+        />
 </LinearLayout>

@@ -21,6 +21,7 @@ import com.franklinho.nytimessearch.ArticleArrayAdapter;
 import com.franklinho.nytimessearch.EditSettingsDialog;
 import com.franklinho.nytimessearch.R;
 import com.franklinho.nytimessearch.SpacesItemDecoration;
+import com.franklinho.nytimessearch.EndlessRecyclerViewScrollListener;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -43,6 +44,7 @@ public class SearchActivity extends AppCompatActivity {
     ArticleArrayAdapter adapter;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
+    String sharedQuery = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +62,14 @@ public class SearchActivity extends AppCompatActivity {
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         rvResults.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
         rvResults.setAdapter(adapter);
-        rvResults.setLayoutManager(new StaggeredGridLayoutManager(2,1));
+        final StaggeredGridLayoutManager staggeredLayoutManager = new StaggeredGridLayoutManager(2,1);
+        rvResults.setLayoutManager(staggeredLayoutManager);
+        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(staggeredLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                requestArticles(page, sharedQuery);
+            }
+        });
 //        rvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -75,7 +84,7 @@ public class SearchActivity extends AppCompatActivity {
 //            }
 //        });
 
-        requestArticles(0, "");
+        requestArticles(0, sharedQuery);
     }
 
     @Override
@@ -89,6 +98,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
+                sharedQuery = query;
                 requestArticles(0,query);
                 searchView.clearFocus();
                 return true;
@@ -125,11 +135,6 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void requestArticles(int page, String query) {
-        if (page == 0) {
-            articles.clear();
-        }
-//        String query = etQuery.getText().toString();
-//        Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show();
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
@@ -164,24 +169,37 @@ public class SearchActivity extends AppCompatActivity {
             params.add("fq","news_desk:(" + newsDeskString + ")");
             Log.d("DEBUG","news_desk:(" + newsDeskString + ")");
         }
-
-
-
-
-
         if (query.length() > 0) {
             params.add("q", query);
         }
+
+
+//        final int curSize;
+        if (page == 0) {
+            articles.clear();
+//            curSize = 0;
+        } else {
+//            curSize = articles.size();
+            params.add("page",String.valueOf(page));
+        }
+
+
+//        String query = etQuery.getText().toString();
+//        Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show();
+
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                 JSONArray articleJsonResults = null;
                 try {
+                    int curSize = adapter.getItemCount();
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                     articles.addAll(Article.fromJSONArray(articleJsonResults));
                     Log.d("DEBUG", articles.toString());
-                    adapter.notifyDataSetChanged();
+//                    adapter.notifyDataSetChanged();
+
+                    adapter.notifyItemRangeInserted(curSize, articles.size()-1);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -192,7 +210,7 @@ public class SearchActivity extends AppCompatActivity {
 
     public void onArticleSearch(View view) {
 
-        requestArticles(0, "");
+        requestArticles(0, sharedQuery);
     }
 
 
