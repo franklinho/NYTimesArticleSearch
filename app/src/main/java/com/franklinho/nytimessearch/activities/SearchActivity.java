@@ -1,7 +1,9 @@
 package com.franklinho.nytimessearch.activities;
 
-import android.support.v4.app.FragmentManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +40,8 @@ public class SearchActivity extends AppCompatActivity {
     String NYTIMES_API_KEY = "3c6aa034b9301a603f43fdc6ce4ef667:5:74335560";
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,9 @@ public class SearchActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        preferences = this.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        editor = preferences.edit();
 
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(articles);
@@ -125,6 +132,40 @@ public class SearchActivity extends AppCompatActivity {
         RequestParams params = new RequestParams();
         params.add("api-key", NYTIMES_API_KEY);
         params.add("page", "0");
+        if (preferences.getInt("newest", 0) != 0) {
+            params.add("sort","oldest");
+        }
+        String dateString = preferences.getString("beginDate","MM/DD/YYYY");
+        if (!dateString.equals("MM/DD/YYYY")) {
+            String[] separated = dateString.split("/");
+            String queryString = separated[2] + separated[0] + separated[1];
+            Log.d("DEBUG",queryString);
+            params.add("begin_date",queryString);
+        }
+
+        Boolean arts = preferences.getBoolean("arts", false);
+        Boolean fashion = preferences.getBoolean("fashion", false);
+        Boolean sports = preferences.getBoolean("sports", false);
+
+        if (arts || fashion || sports) {
+            String newsDeskString = "";
+            if (arts) {
+                newsDeskString = newsDeskString + "\"Arts\"";
+            }
+            if (fashion) {
+                newsDeskString = newsDeskString + "\"Fashion & Style\"";
+            }
+            if (sports) {
+                newsDeskString = newsDeskString + "\"Sports\"";
+            }
+            params.add("fq","news_desk:(" + newsDeskString + ")");
+            Log.d("DEBUG","news_desk:(" + newsDeskString + ")");
+        }
+
+
+
+
+
         if (query.length() > 0) {
             params.add("q", query);
         }
