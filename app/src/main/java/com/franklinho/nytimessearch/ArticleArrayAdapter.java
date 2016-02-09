@@ -16,6 +16,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by franklinho on 2/8/16.
  */
@@ -30,17 +33,19 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
     }
 
     public static class ViewHolder extends  RecyclerView.ViewHolder  implements  View.OnClickListener {
-        public ImageView ivImage;
-        public TextView tvTitle;
         private Context context;
         public Article article;
+        @Bind(R.id.tvTitle) TextView tvTitle;
+        @Bind(R.id.ivImage) ImageView ivImage;
 
         public ViewHolder(View itemView) {
             super (itemView);
+            ButterKnife.bind(this,itemView);
+
 
             context=itemView.getContext();
-            tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
-            ivImage = (ImageView) itemView.findViewById(R.id.ivImage);
+
+
             itemView.setOnClickListener(this);
         }
 
@@ -82,6 +87,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
         textView.setText(article.getHeadline());
 
         final String thumbnail = article.getThumbNail();
+        imageView.setImageResource(0);
         if (!TextUtils.isEmpty(thumbnail)) {
             imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override

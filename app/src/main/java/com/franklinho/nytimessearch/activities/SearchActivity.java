@@ -1,19 +1,22 @@
 package com.franklinho.nytimessearch.activities;
 
+import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
 import com.franklinho.nytimessearch.Article;
 import com.franklinho.nytimessearch.ArticleArrayAdapter;
+import com.franklinho.nytimessearch.EditSettingsDialog;
 import com.franklinho.nytimessearch.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -31,9 +34,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity {
 
-    @Bind(R.id.etQuery) EditText etQuery;
     @Bind(R.id.rvResults) RecyclerView rvResults;
-    @Bind(R.id.btnSearch) Button btnSearch;
     String NYTIMES_API_KEY = "3c6aa034b9301a603f43fdc6ce4ef667:5:74335560";
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
@@ -49,7 +50,7 @@ public class SearchActivity extends AppCompatActivity {
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(articles);
         rvResults.setAdapter(adapter);
-        rvResults.setLayoutManager(new StaggeredGridLayoutManager(3,1));
+        rvResults.setLayoutManager(new StaggeredGridLayoutManager(2,1));
 //        rvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -64,13 +65,30 @@ public class SearchActivity extends AppCompatActivity {
 //            }
 //        });
 
-        requestArticles(0);
+        requestArticles(0, "");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_search, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                requestArticles(0,query);
+                searchView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return true;
     }
 
@@ -83,17 +101,24 @@ public class SearchActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            showSettingsDialog();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void requestArticles(int page) {
+    private void showSettingsDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        EditSettingsDialog settingsDialog = EditSettingsDialog.newInstance();
+        settingsDialog.show(fm, "fragment_edit_settings");
+    }
+
+    public void requestArticles(int page, String query) {
         if (page == 0) {
             articles.clear();
         }
-        String query = etQuery.getText().toString();
+//        String query = etQuery.getText().toString();
 //        Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show();
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
@@ -123,6 +148,10 @@ public class SearchActivity extends AppCompatActivity {
 
     public void onArticleSearch(View view) {
 
-        requestArticles(0);
+        requestArticles(0, "");
     }
+
+
+
+
 }
