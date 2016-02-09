@@ -20,6 +20,7 @@ import com.franklinho.nytimessearch.Article;
 import com.franklinho.nytimessearch.ArticleArrayAdapter;
 import com.franklinho.nytimessearch.EditSettingsDialog;
 import com.franklinho.nytimessearch.R;
+import com.franklinho.nytimessearch.SpacesItemDecoration;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -56,6 +57,8 @@ public class SearchActivity extends AppCompatActivity {
 
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(articles);
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        rvResults.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
         rvResults.setAdapter(adapter);
         rvResults.setLayoutManager(new StaggeredGridLayoutManager(2,1));
 //        rvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
