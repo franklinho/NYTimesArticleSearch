@@ -1,8 +1,12 @@
 package com.franklinho.nytimessearch;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +14,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,16 +51,94 @@ public class EditSettingsDialog extends DialogFragment{
         View view = inflater.inflate(R.layout.fragment_edit_settings,container, false);
         ButterKnife.bind(this, view);
 
-//
-//        SharedPreferences preferences = getContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = preferences.edit();
-//
-//        btnSave.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
+        TextWatcher tw = new TextWatcher() {
+            private String current = "";
+            private String mmddyyyy = "MMDDYYYY";
+            private Calendar cal = Calendar.getInstance();
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    String clean = s.toString().replaceAll("[^\\d.]", "");
+                    String cleanC = current.replaceAll("[^\\d.]", "");
+
+                    int cl = clean.length();
+                    int sel = cl;
+                    for (int i = 2; i <= cl && i < 6; i += 2) {
+                        sel++;
+                    }
+                    //Fix for pressing delete next to a forward slash
+                    if (clean.equals(cleanC)) sel--;
+
+                    if (clean.length() < 8){
+                        clean = clean + mmddyyyy.substring(clean.length());
+                    }else{
+                        //This part makes sure that when we finish entering numbers
+                        //the date is correct, fixing it otherwise
+                        int mon  = Integer.parseInt(clean.substring(0,2));
+                        int day  = Integer.parseInt(clean.substring(2,4));
+                        int year = Integer.parseInt(clean.substring(4,8));
+
+                        if(mon > 12) mon = 12;
+                        cal.set(Calendar.MONTH, mon-1);
+                        year = (year<1900)?1900:(year>2100)?2100:year;
+                        cal.set(Calendar.YEAR, year);
+                        // ^ first set year for the line below to work correctly
+                        //with leap years - otherwise, date e.g. 29/02/2012
+                        //would be automatically corrected to 28/02/2012
+
+                        day = (day > cal.getActualMaximum(Calendar.DATE))? cal.getActualMaximum(Calendar.DATE):day;
+                        clean = String.format("%02d%02d%02d",mon, day, year);
+                    }
+
+                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
+                            clean.substring(2, 4), clean.substring(4, 8));
+
+                    sel = sel < 0 ? 0 : sel;
+                    current = clean;
+                    etBeginDate.setText(current);
+                    etBeginDate.setSelection(sel < current.length() ? sel : current.length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+
+        etBeginDate.addTextChangedListener(tw);
+
+
+        SharedPreferences preferences = getContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = preferences.edit();
+
+
+        etBeginDate.setText(preferences.getString("beginDate","MM/DD/YYYY"));
+        spnSortOrder.setSelection(preferences.getInt("newest", 0));
+        cbArts.setChecked(preferences.getBoolean("arts", false));
+        cbFashion.setChecked(preferences.getBoolean("fashion", false));
+        cbSports.setChecked(preferences.getBoolean("sports", false));
+
+
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editor.putString("beginDate", etBeginDate.getText().toString());
+                editor.putInt("newest", spnSortOrder.getSelectedItemPosition());
+                editor.putBoolean("arts", cbArts.isChecked());
+                editor.putBoolean("fashion",cbFashion.isChecked());
+                editor.putBoolean("sports",cbSports.isChecked());
+                editor.commit();
+
+                dismiss();
+            }
+        });
 
         return view;
     }
