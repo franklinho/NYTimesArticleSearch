@@ -1,6 +1,7 @@
 package com.franklinho.nytimessearch;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import com.franklinho.nytimessearch.activities.SearchActivity;
 
 import java.util.Calendar;
 
@@ -132,8 +135,8 @@ public class EditSettingsDialog extends DialogFragment{
                 editor.putString("beginDate", etBeginDate.getText().toString());
                 editor.putInt("newest", spnSortOrder.getSelectedItemPosition());
                 editor.putBoolean("arts", cbArts.isChecked());
-                editor.putBoolean("fashion",cbFashion.isChecked());
-                editor.putBoolean("sports",cbSports.isChecked());
+                editor.putBoolean("fashion", cbFashion.isChecked());
+                editor.putBoolean("sports", cbSports.isChecked());
                 editor.commit();
 
                 dismiss();
@@ -148,5 +151,11 @@ public class EditSettingsDialog extends DialogFragment{
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        SearchActivity searchActivity = (SearchActivity) getActivity();
+        searchActivity.requestArticles(0, searchActivity.sharedQuery);
+    }
 
 }

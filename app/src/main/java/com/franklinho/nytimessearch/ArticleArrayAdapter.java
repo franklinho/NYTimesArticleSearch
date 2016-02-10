@@ -99,6 +99,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
                 public void onGlobalLayout() {
                     imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     Picasso.with(holder.context).load(thumbnail).resize(imageView.getWidth(), 0).into(imageView);
+//                    Glide.with(holder.context).load(thumbnail).into(imageView);
                 }
 
 

@@ -45,7 +45,7 @@ public class SearchActivity extends AppCompatActivity {
     ArticleArrayAdapter adapter;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-    String sharedQuery = "";
+    public String sharedQuery = "";
 
 
 
@@ -70,6 +70,7 @@ public class SearchActivity extends AppCompatActivity {
         rvResults.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
         rvResults.setAdapter(adapter);
         final StaggeredGridLayoutManager staggeredLayoutManager = new StaggeredGridLayoutManager(2,1);
+        staggeredLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         rvResults.setLayoutManager(staggeredLayoutManager);
         rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(staggeredLayoutManager) {
             @Override
@@ -164,7 +165,7 @@ public class SearchActivity extends AppCompatActivity {
 //        }
 //
 //    }
-    public void requestArticles(int page, String query) {
+    public void requestArticles(final int page, String query) {
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
@@ -172,10 +173,10 @@ public class SearchActivity extends AppCompatActivity {
         if (query.length() > 0) {
             params.add("q", query);
         }
-
 //        final int curSize;
         if (page == 0) {
             articles.clear();
+
 //            curSize = 0;
         }
         params.add("api-key", NYTIMES_API_KEY);
@@ -215,18 +216,25 @@ public class SearchActivity extends AppCompatActivity {
 //        String query = etQuery.getText().toString();
 //        Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show();
 
+
+
+
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                 JSONArray articleJsonResults = null;
                 try {
-                    int curSize = adapter.getItemCount();
+                    int curSize = articles.size();
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                     if (articleJsonResults.length() > 0) {
                         articles.addAll(Article.fromJSONArray(articleJsonResults));
                         Log.d("DEBUG", articles.toString());
-                        adapter.notifyItemRangeInserted(curSize, articles.size()-1);
+                        if (page > 0) {
+                            adapter.notifyItemRangeInserted(curSize, articles.size()-1);
+                        } else {
+                            adapter.notifyDataSetChanged();
+                        }
                     } else {
                         adapter.notifyDataSetChanged();
                     }
@@ -242,8 +250,6 @@ public class SearchActivity extends AppCompatActivity {
 
         requestArticles(0, sharedQuery);
     }
-
-
 
 
 }
