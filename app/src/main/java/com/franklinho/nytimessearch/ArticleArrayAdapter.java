@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.franklinho.nytimessearch.activities.ArticleActivity;
 import com.squareup.picasso.Picasso;
 
+import org.parceler.Parcels;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -55,7 +57,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
             Intent i = new Intent(context, ArticleActivity.class);
             //get the article to display
             // pass article into intent
-            i.putExtra("article", article);
+            i.putExtra("article", Parcels.wrap(article));
             // launch the activity
             context.startActivity(i);
 

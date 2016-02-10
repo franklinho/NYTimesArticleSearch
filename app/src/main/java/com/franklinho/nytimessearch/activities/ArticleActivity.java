@@ -9,6 +9,8 @@ import android.webkit.WebViewClient;
 import com.franklinho.nytimessearch.Article;
 import com.franklinho.nytimessearch.R;
 
+import org.parceler.Parcels;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -24,7 +26,7 @@ public class ArticleActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Article article = (Article) getIntent().getSerializableExtra("article");
+        Article article = (Article) Parcels.unwrap(getIntent().getParcelableExtra("article"));
 
         wvArticle.setWebViewClient(new WebViewClient(){
             @Override

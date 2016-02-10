@@ -3,6 +3,7 @@ package com.franklinho.nytimessearch;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by franklinho on 2/8/16.
  */
+@Parcel
 public class Article implements Serializable {
     public String getWebUrl() {
         return webUrl;
@@ -26,6 +28,10 @@ public class Article implements Serializable {
     String webUrl;
     String headline;
     String thumbNail;
+
+    public Article() {
+
+    }
 
     public Article(JSONObject jsonObject) {
         try {
