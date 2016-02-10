@@ -23,4 +23,40 @@
         android:numColumns="4"
         android:layout_alignParentTop="true" />
 
+    <RelativeLayout android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:background="@color/yellow"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/rvResults"
+        android:layout_alignEnd="@+id/rvResults"
+        android:id="@+id/alertLayout"
+        android:visibility="gone"
+        >
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Internet Connection"
+            android:textColor="@android:color/black"
+            android:id="@+id/textView2"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/textView2"
+            android:layout_toStartOf="@+id/textView2"
+            android:src="@drawable/alert_icon"
+            android:layout_marginRight="10dp"/>
+    </RelativeLayout>
+
+
+
 </RelativeLayout>
