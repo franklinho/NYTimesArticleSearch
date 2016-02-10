@@ -27,12 +27,34 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp" />
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/end_date"
+        android:id="@+id/tvEndDate"
+        android:layout_alignBottom="@+id/etEndDate"
+        android:layout_margin="10dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:id="@+id/etEndDate"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/etBeginDate"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sort_order"
         android:id="@+id/tvSortOrder"
-        android:layout_below="@+id/tvBeginDate"
+        android:layout_below="@+id/tvEndDate"
         android:layout_toLeftOf="@+id/spinner"
         android:layout_toStartOf="@+id/spinner"
         android:layout_margin="10dp" />
@@ -41,12 +63,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/spnSortOrder"
-        android:layout_below="@+id/etBeginDate"
-        android:layout_alignRight="@+id/etBeginDate"
-        android:layout_alignEnd="@+id/etBeginDate"
+        android:layout_below="@+id/etEndDate"
+        android:layout_alignRight="@+id/etEndDate"
+        android:layout_alignEnd="@+id/etEndDate"
         android:entries="@array/sort_orders"
-        android:layout_alignLeft="@+id/etBeginDate"
-        android:layout_alignStart="@+id/etBeginDate"
+        android:layout_alignLeft="@+id/etEndDate"
+        android:layout_alignStart="@+id/etEndDate"
         android:spinnerMode="dropdown"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp" />

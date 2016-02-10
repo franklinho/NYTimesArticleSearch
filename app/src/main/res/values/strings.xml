@@ -14,6 +14,8 @@
     <string name="save">SAVE</string>
     <string name="share">Share</string>
     <string name="filter">Filter</string>
+    <string name="end_date">End Date</string>
+    <string name="network_connection_issue">Network Connection Error</string>
 
     <string-array name="sort_orders">
         <item>Newest</item>

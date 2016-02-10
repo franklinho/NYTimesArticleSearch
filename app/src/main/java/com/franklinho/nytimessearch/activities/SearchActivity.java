@@ -18,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.franklinho.nytimessearch.Article;
 import com.franklinho.nytimessearch.ArticleArrayAdapter;
@@ -51,6 +53,8 @@ public class SearchActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
     public String sharedQuery = "";
     @Bind(R.id.alertLayout) RelativeLayout alertLayout;
+    @Bind(R.id.tvAlertText) TextView tvAlertText;
+    @Bind(R.id.ivAlertImage) ImageView ivAlertImage;
 
 
 
@@ -181,12 +185,20 @@ public class SearchActivity extends AppCompatActivity {
             if (preferences.getInt("newest", 0) != 0) {
                 params.add("sort","oldest");
             }
-            String dateString = preferences.getString("beginDate","MM/DD/YYYY");
-            if (!dateString.equals("MM/DD/YYYY")) {
-                String[] separated = dateString.split("/");
+            String beingDateString = preferences.getString("beginDate","MM/DD/YYYY");
+            if (!beingDateString.equals("MM/DD/YYYY")) {
+                String[] separated = beingDateString.split("/");
                 String queryString = separated[2] + separated[0] + separated[1];
                 Log.d("DEBUG", queryString);
                 params.add("begin_date",queryString);
+            }
+
+            String endDateString = preferences.getString("endDate","MM/DD/YYYY");
+            if (!endDateString.equals("MM/DD/YYYY")) {
+                String[] separated = endDateString.split("/");
+                String queryString = separated[2] + separated[0] + separated[1];
+                Log.d("DEBUG", queryString);
+                params.add("end_date",queryString);
             }
 
             Boolean arts = preferences.getBoolean("arts", false);
@@ -225,6 +237,7 @@ public class SearchActivity extends AppCompatActivity {
                                 adapter.notifyDataSetChanged();
                             }
                         } else {
+                            setAlertToNoItemsError();
                             adapter.notifyDataSetChanged();
                         }
                     } catch (JSONException e) {
@@ -234,7 +247,7 @@ public class SearchActivity extends AppCompatActivity {
                 }
             });
         } else {
-            alertLayout.setVisibility(View.VISIBLE);
+            setAlertToNetworkConnectionError();
         }
     }
 
@@ -260,6 +273,20 @@ public class SearchActivity extends AppCompatActivity {
         } catch (IOException e)          { e.printStackTrace(); }
         catch (InterruptedException e) { e.printStackTrace(); }
         return false;
+    }
+
+    private void setAlertToNetworkConnectionError() {
+        alertLayout.setBackgroundColor(R.color.yellow);
+        tvAlertText.setText("Network Connection Error");
+        ivAlertImage.setVisibility(View.VISIBLE);
+        alertLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void setAlertToNoItemsError() {
+        alertLayout.setBackgroundColor(R.color.white);
+        tvAlertText.setText("Search Returned No Items");
+        ivAlertImage.setVisibility(View.INVISIBLE);
+        alertLayout.setVisibility(View.VISIBLE);
     }
 
 }
