@@ -20,14 +20,15 @@ public class Article implements Serializable {
     public String getHeadline() {
         return headline;
     }
-
     public String getThumbNail() {
         return thumbNail;
     }
+    public String getSnippet() { return snippet; }
 
     String webUrl;
     String headline;
     String thumbNail;
+    String snippet;
 
     public Article() {
 
@@ -36,6 +37,7 @@ public class Article implements Serializable {
     public Article(JSONObject jsonObject) {
         try {
             this.webUrl = jsonObject.getString("web_url");
+            this.snippet = jsonObject.getString("snippet");
             this.headline = jsonObject.getJSONObject("headline").getString("main");
             JSONArray multimedia = jsonObject.getJSONArray("multimedia");
 

@@ -3,6 +3,7 @@ package com.franklinho.nytimessearch;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,7 +88,11 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
 
         imageView.setImageResource(0);
         if (article.getHeadline() != null) {
-            textView.setText(article.getHeadline());
+            if (article.getSnippet() == null) {
+                textView.setText(article.getHeadline());
+            } else {
+                textView.setText(Html.fromHtml("<b>"+article.getHeadline()+"</b><br>"+" "+article.getSnippet()));
+            }
         }
 
 
