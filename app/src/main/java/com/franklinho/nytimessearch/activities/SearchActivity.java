@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -19,9 +20,9 @@ import android.view.View;
 import com.franklinho.nytimessearch.Article;
 import com.franklinho.nytimessearch.ArticleArrayAdapter;
 import com.franklinho.nytimessearch.EditSettingsDialog;
+import com.franklinho.nytimessearch.EndlessRecyclerViewScrollListener;
 import com.franklinho.nytimessearch.R;
 import com.franklinho.nytimessearch.SpacesItemDecoration;
-import com.franklinho.nytimessearch.EndlessRecyclerViewScrollListener;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -46,6 +47,8 @@ public class SearchActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
     String sharedQuery = "";
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +56,10 @@ public class SearchActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setLogo(R.drawable.space_between_icon);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
 
         preferences = this.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         editor = preferences.edit();
@@ -99,7 +106,7 @@ public class SearchActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
 
                 sharedQuery = query;
-                requestArticles(0,query);
+                requestArticles(0, query);
                 searchView.clearFocus();
                 return true;
             }
@@ -109,6 +116,10 @@ public class SearchActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+
+
+
         return true;
     }
 
@@ -134,12 +145,41 @@ public class SearchActivity extends AppCompatActivity {
         settingsDialog.show(fm, "fragment_edit_settings");
     }
 
+//    private void updateFilterCount() {
+//        int filterCount = 0;
+//        if (preferences.getInt("newest", 0) != 0) {
+//            filterCount += 1;
+//        }
+//        if (!preferences.getString("beginDate","MM/DD/YYYY").equals("MM/DD/YYYY")) {
+//            filterCount += 1;
+//        }
+//        if (preferences.getBoolean("arts", false)) {
+//            filterCount += 1;
+//        }
+//        if (preferences.getBoolean("fashion", false)) {
+//            filterCount += 1;
+//        }
+//        if (preferences.getBoolean("sports", false)) {
+//            filterCount += 1;
+//        }
+//
+//    }
     public void requestArticles(int page, String query) {
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
+
+        if (query.length() > 0) {
+            params.add("q", query);
+        }
+
+//        final int curSize;
+        if (page == 0) {
+            articles.clear();
+//            curSize = 0;
+        }
         params.add("api-key", NYTIMES_API_KEY);
-        params.add("page", "0");
+        params.add("page",String.valueOf(page));
         if (preferences.getInt("newest", 0) != 0) {
             params.add("sort","oldest");
         }
@@ -169,19 +209,7 @@ public class SearchActivity extends AppCompatActivity {
             params.add("fq","news_desk:(" + newsDeskString + ")");
             Log.d("DEBUG","news_desk:(" + newsDeskString + ")");
         }
-        if (query.length() > 0) {
-            params.add("q", query);
-        }
 
-
-//        final int curSize;
-        if (page == 0) {
-            articles.clear();
-//            curSize = 0;
-        } else {
-//            curSize = articles.size();
-            params.add("page",String.valueOf(page));
-        }
 
 
 //        String query = etQuery.getText().toString();
@@ -195,11 +223,13 @@ public class SearchActivity extends AppCompatActivity {
                 try {
                     int curSize = adapter.getItemCount();
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    articles.addAll(Article.fromJSONArray(articleJsonResults));
-                    Log.d("DEBUG", articles.toString());
-//                    adapter.notifyDataSetChanged();
-
-                    adapter.notifyItemRangeInserted(curSize, articles.size()-1);
+                    if (articleJsonResults.length() > 0) {
+                        articles.addAll(Article.fromJSONArray(articleJsonResults));
+                        Log.d("DEBUG", articles.toString());
+                        adapter.notifyItemRangeInserted(curSize, articles.size()-1);
+                    } else {
+                        adapter.notifyDataSetChanged();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

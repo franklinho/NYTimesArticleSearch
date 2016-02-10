@@ -84,7 +84,10 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
         holder.article = article;
 
         imageView.setImageResource(0);
-        textView.setText(article.getHeadline());
+        if (article.getHeadline() != null) {
+            textView.setText(article.getHeadline());
+        }
+
 
         final String thumbnail = article.getThumbNail();
         imageView.setImageResource(0);
