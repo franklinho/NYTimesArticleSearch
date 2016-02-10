@@ -13,6 +13,7 @@
     <string name="sports">Sports</string>
     <string name="save">SAVE</string>
     <string name="share">Share</string>
+    <string name="filter">Filter</string>
 
     <string-array name="sort_orders">
         <item>Newest</item>
