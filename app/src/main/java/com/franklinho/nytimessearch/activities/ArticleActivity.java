@@ -30,10 +30,14 @@ public class ArticleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+
 
         article = (Article) Parcels.unwrap(getIntent().getParcelableExtra("article"));
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(article.getHeadline());
+        setSupportActionBar(toolbar);
 
 
         wvArticle.setWebViewClient(new WebViewClient(){
