@@ -34,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -84,20 +85,6 @@ public class SearchActivity extends AppCompatActivity {
                 requestArticles(page, sharedQuery);
             }
         });
-//        rvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                // create an intent to display the article
-//                Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
-//                //get the article to display
-//                Article article = articles.get(position);
-//                // pass article into intent
-//                i.putExtra("article", article);
-//                // launch the activity
-//                startActivity(i);
-//            }
-//        });
-
 
         requestArticles(0,sharedQuery);
 
@@ -174,7 +161,7 @@ public class SearchActivity extends AppCompatActivity {
 //
 //    }
     public void requestArticles(final int page, String query) {
-        if (isNetworkAvailable()) {
+        if (isNetworkAvailable() && isOnline()) {
             alertLayout.setVisibility(View.GONE);
             AsyncHttpClient client = new AsyncHttpClient();
             String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
@@ -229,7 +216,7 @@ public class SearchActivity extends AppCompatActivity {
                     try {
                         int curSize = articles.size();
                         articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                        if (articleJsonResults.length() > 0) {
+                        if (articleJsonResults.length() > 0 && articleJsonResults != null) {
                             articles.addAll(Article.fromJSONArray(articleJsonResults));
                             Log.d("DEBUG", articles.toString());
                             if (page > 0) {
@@ -256,11 +243,23 @@ public class SearchActivity extends AppCompatActivity {
         requestArticles(0, sharedQuery);
     }
 
+
     private Boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException e)          { e.printStackTrace(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+        return false;
     }
 
 }
