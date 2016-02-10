@@ -22,7 +22,8 @@
         android:numColumns="4"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"/>
+        android:layout_marginRight="5dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <RelativeLayout android:layout_width="wrap_content"
         android:layout_height="50dp"

@@ -29,6 +29,8 @@ Time spent: 9 hours spent in total
     * :white_check_mark: Bonus: Use Parcelable instead of Serializable using the popular Parceler library. (1 point)
     * :white_large_square: Bonus: Leverage the popular GSON library to streamline the parsing of JSON data. (1 point)
     * :white_check_mark: Bonus: Replace Picasso with Glide for more efficient image rendering. (1 point)
+  * The additional user stores were implemented:
+    * Added hiding to the toolbar when scrolling
 
 
 ## Video Walkthrough 
