@@ -2,7 +2,7 @@
 
 New York Times article search is an android app that allows a user to read NY Times articles by searching and filtering. The app utilizes the NYTimes API to display article images and headlines, and opens up the articles in a webview.
 
-Time spent: 9 hours spent in total
+Time spent: 12 hours spent in total
 
 ## User Stories
 
@@ -44,9 +44,10 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-  * Running into issues with images being loaded during infinite scroll. Images will only load if you scroll past a certain distance.
+  * Ran into issues with images being loaded during infinite scroll. Implemented DynamicHeightImageViewClass from etsy
   * Ran into issues with sharing webview url, but eventually figured it out
   * Utilized formatted edit text field with validation rather than datepicker
+  * Had trouble utilizing a custom class, realized that the item has to be declared in the layout.
 
 
 ## Open-source libraries used
