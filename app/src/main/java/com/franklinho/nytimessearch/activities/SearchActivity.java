@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -81,7 +82,9 @@ public class SearchActivity extends AppCompatActivity {
         rvResults.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
         rvResults.setAdapter(adapter);
         final StaggeredGridLayoutManager staggeredLayoutManager = new StaggeredGridLayoutManager(2,1);
+
         staggeredLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+//        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         rvResults.setLayoutManager(staggeredLayoutManager);
         rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(staggeredLayoutManager) {
             @Override

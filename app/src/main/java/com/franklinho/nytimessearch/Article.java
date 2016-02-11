@@ -28,6 +28,17 @@ public class Article implements Serializable {
     String webUrl;
     String headline;
     String thumbNail;
+
+    public int getThumbNailHeight() {
+        return thumbNailHeight;
+    }
+
+    public int getThumbnailWidth() {
+        return thumbnailWidth;
+    }
+
+    int thumbNailHeight;
+    int thumbnailWidth;
     String snippet;
 
     public Article() {
@@ -44,6 +55,8 @@ public class Article implements Serializable {
             if (multimedia.length() > 0) {
                 JSONObject multimediaJson = multimedia.getJSONObject(0);
                 this.thumbNail = "http://www.nytimes.com/" + multimediaJson.getString("url");
+                this.thumbNailHeight = multimediaJson.getInt("height");
+                this.thumbnailWidth = multimediaJson.getInt("width");
             } else {
                 this.thumbNail = "";
             }

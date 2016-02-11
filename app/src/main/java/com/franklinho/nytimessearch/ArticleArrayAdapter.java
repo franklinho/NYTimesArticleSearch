@@ -8,8 +8,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.franklinho.nytimessearch.activities.ArticleActivity;
@@ -31,6 +29,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 //    }
     private List<Article> mArticles;
     private final int WITH_IMAGE = 0, TEXT_ONLY=1;
+    public int viewWidth;
 
     public ArticleArrayAdapter(List<Article> articles) {
         mArticles = articles;
@@ -40,6 +39,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         @Bind(R.id.tvTitle) TextView tvTitle;
         private Context context;
         public Article article;
+
 
         public ViewHolderText(View itemView) {
             super (itemView);
@@ -65,16 +65,14 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private Context context;
         public Article article;
         @Bind(R.id.tvTitle) TextView tvTitle;
-        @Bind(R.id.ivImage) ImageView ivImage;
+        @Bind(R.id.ivImage) DynamicHeightImageView ivImage;
+//        DynamicHeightImageView ivImage;
+
 
         public ViewHolderImageText(View itemView) {
-            super (itemView);
-            ButterKnife.bind(this,itemView);
-
-
+            super(itemView);
+            ButterKnife.bind(this, itemView);
             context=itemView.getContext();
-
-
             itemView.setOnClickListener(this);
         }
 
@@ -110,25 +108,21 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
+
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
 
-        switch (viewType) {
-            case WITH_IMAGE:
-                View articleViewImageText = inflater.inflate(R.layout.item_article_result, parent, false);
-                viewHolder = new ViewHolderImageText(articleViewImageText);
-                break;
-            case TEXT_ONLY:
-                View articleViewText = inflater.inflate(R.layout.item_article_no_image, parent, false);
-                viewHolder = new ViewHolderText(articleViewText);
-                break;
-            default:
-                View articleViewDefault = inflater.inflate(R.layout.item_article_result, parent, false);
-                viewHolder = new ViewHolderImageText(articleViewDefault);
-                break;
+        if (viewType == WITH_IMAGE) {
+            View articleViewImageText = inflater.inflate(R.layout.item_article_result, parent, false);
+            ViewHolderImageText vhImageText = new ViewHolderImageText(articleViewImageText);
+            return vhImageText;
+        } else {
+            View articleViewText = inflater.inflate(R.layout.item_article_no_image, parent, false);
+            ViewHolderText vhText = new ViewHolderText(articleViewText);
+            return vhText;
         }
-        return viewHolder;
+
     }
 
     @Override
@@ -157,7 +151,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         Article article = mArticles.get(position);
         TextView textView = vhImageText.tvTitle;
         vhImageText.article = article;
-        final ImageView imageView;
+        final DynamicHeightImageView imageView;
         final String thumbnail;
 
         if (article.getHeadline() != null) {
@@ -168,19 +162,14 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         }
         imageView = vhImageText.ivImage;
+
         imageView.setImageResource(0);
         thumbnail = article.getThumbNail();
-        imageView.setImageResource(0);
+
+
         if (!TextUtils.isEmpty(thumbnail)) {
-            imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    Picasso.with(vhImageText.context).load(thumbnail).resize(imageView.getWidth(), 0).into(imageView);
-                    // Decided not to go with Glide due to automatic resizing
-//                    Glide.with(holder.context).load(thumbnail).into(imageView);
-                }
-            });
+            imageView.setHeightRatio((double) article.getThumbNailHeight() / article.getThumbnailWidth());
+            Picasso.with(vhImageText.context).load(thumbnail).fit().into(imageView);
         }
 
     }
