@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,25 +68,28 @@ public class SearchActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
+        //Set NYTimes Icon
         actionBar.setLogo(R.drawable.space_between_icon);
         actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
-
-
+        //Prepare sharedpreferences for filters
         preferences = this.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         editor = preferences.edit();
 
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(articles);
+        //set up spacing for Recyclerview
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         rvResults.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
         rvResults.setAdapter(adapter);
+        //Set up layout type for RecyclerView
         final StaggeredGridLayoutManager staggeredLayoutManager = new StaggeredGridLayoutManager(2,1);
 
         staggeredLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
 //        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         rvResults.setLayoutManager(staggeredLayoutManager);
+        //Prepare RecyclerView for infinite scroll
         rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(staggeredLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -103,6 +108,7 @@ public class SearchActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        //Implement search bar
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -116,6 +122,18 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 return false;
+            }
+        });
+
+        // Handle clearing search
+        ImageView closeButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText et = (EditText) findViewById(R.id.search_src_text);
+                et.setText("");
+                sharedQuery = "";
+                requestArticles(0,sharedQuery);
             }
         });
 
@@ -141,32 +159,15 @@ public class SearchActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //Shows filters
     private void showSettingsDialog() {
         FragmentManager fm = getSupportFragmentManager();
         EditSettingsDialog settingsDialog = EditSettingsDialog.newInstance();
         settingsDialog.show(fm, "fragment_edit_settings");
     }
 
-//    private void updateFilterCount() {
-//        int filterCount = 0;
-//        if (preferences.getInt("newest", 0) != 0) {
-//            filterCount += 1;
-//        }
-//        if (!preferences.getString("beginDate","MM/DD/YYYY").equals("MM/DD/YYYY")) {
-//            filterCount += 1;
-//        }
-//        if (preferences.getBoolean("arts", false)) {
-//            filterCount += 1;
-//        }
-//        if (preferences.getBoolean("fashion", false)) {
-//            filterCount += 1;
-//        }
-//        if (preferences.getBoolean("sports", false)) {
-//            filterCount += 1;
-//        }
-//
-//    }
     public void requestArticles(final int page, String query) {
+        // Check for network connectivity
         if (isNetworkAvailable() && isOnline()) {
             alertLayout.setVisibility(View.GONE);
             AsyncHttpClient client = new AsyncHttpClient();
@@ -176,17 +177,19 @@ public class SearchActivity extends AppCompatActivity {
             if (query.length() > 0) {
                 params.add("q", query);
             }
-//        final int curSize;
+
+            // Clear articles for new queries
             if (page == 0) {
                 articles.clear();
 
-//            curSize = 0;
             }
             params.add("api-key", NYTIMES_API_KEY);
             params.add("page",String.valueOf(page));
             if (preferences.getInt("newest", 0) != 0) {
                 params.add("sort","oldest");
             }
+
+            // Add filters for begin date and end date
             String beingDateString = preferences.getString("beginDate","MM/DD/YYYY");
             if (!beingDateString.equals("MM/DD/YYYY")) {
                 String[] separated = beingDateString.split("/");
@@ -203,6 +206,7 @@ public class SearchActivity extends AppCompatActivity {
                 params.add("end_date",queryString);
             }
 
+            // Ad filter for news desk items
             Boolean arts = preferences.getBoolean("arts", false);
             Boolean fashion = preferences.getBoolean("fashion", false);
             Boolean sports = preferences.getBoolean("sports", false);
@@ -222,18 +226,24 @@ public class SearchActivity extends AppCompatActivity {
                 Log.d("DEBUG","news_desk:(" + newsDeskString + ")");
             }
 
+            //Make request
             client.get(url, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
 //                    JSONArray articleJsonResults = null;
-                    String articleJsonResults = null;
+                    JSONArray articleJsonResults = null;
+                    String articleJsonResultsString;
                     try {
                         int curSize = articles.size();
-                        articleJsonResults = response.getJSONObject("response").toString();
+
+                        articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                        articleJsonResultsString = response.getJSONObject("response").toString();
+
                         if (articleJsonResults.length() > 0 && articleJsonResults != null) {
 //                            articles.addAll(Article.fromJSONArray(articleJsonResults));
-                            NYTimesArticleResponse articleResponse = NYTimesArticleResponse.parseJSON(articleJsonResults);
+                            //Parse JSON with GSON Class
+                            NYTimesArticleResponse articleResponse = NYTimesArticleResponse.parseJSON(articleJsonResultsString);
                             articles.addAll(articleResponse.getArticles());
                             Log.d("DEBUG", articles.toString());
                             if (page > 0) {
@@ -262,6 +272,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
+    //Checks if network is available
     private Boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -269,6 +280,7 @@ public class SearchActivity extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
+    // Check if user is connected to the internet
     public boolean isOnline() {
         Runtime runtime = Runtime.getRuntime();
         try {
@@ -280,6 +292,7 @@ public class SearchActivity extends AppCompatActivity {
         return false;
     }
 
+    //Shows alert if not connected to internet
     private void setAlertToNetworkConnectionError() {
         alertLayout.setBackgroundColor(R.color.yellow);
         tvAlertText.setText("Network Connection Error");
@@ -287,6 +300,7 @@ public class SearchActivity extends AppCompatActivity {
         alertLayout.setVisibility(View.VISIBLE);
     }
 
+    //Shows alert if there are no items
     private void setAlertToNoItemsError() {
         alertLayout.setBackgroundColor(R.color.white);
         tvAlertText.setText("Search Returned No Items");

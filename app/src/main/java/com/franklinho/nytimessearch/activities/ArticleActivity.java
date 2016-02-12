@@ -33,15 +33,19 @@ public class ArticleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_article);
         ButterKnife.bind(this);
 
-
-
+        //Unwrap article
         article = (com.franklinho.nytimessearch.models.Article) Parcels.unwrap(getIntent().getParcelableExtra("article"));
 
+        //Set headline in to title
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(article.getHeadline().getMain());
+        String headline = article.getHeadline().getMain();
+        if (headline != null) {
+            toolbar.setTitle(headline);
+        }
         setSupportActionBar(toolbar);
 
 
+        //Add progress bar for webview
         wvArticle.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress)
             {
@@ -54,6 +58,8 @@ public class ArticleActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //Make webview stay in app rather than launching browser
         wvArticle.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -62,11 +68,15 @@ public class ArticleActivity extends AppCompatActivity {
             }
 
         });
+
+        //Load article URL
         wvArticle.loadUrl(article.getWebUrl());
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        //Add share action bar item
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_article, menu);
         MenuItem item = menu.findItem(R.id.menu_item_share);

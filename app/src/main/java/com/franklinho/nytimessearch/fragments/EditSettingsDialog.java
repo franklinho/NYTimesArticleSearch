@@ -27,6 +27,8 @@ import butterknife.ButterKnife;
 /**
  * Created by franklinho on 2/9/16.
  */
+
+//This dialog shows the filters available
 public class EditSettingsDialog extends DialogFragment{
     @Bind(R.id.etBeginDate) EditText etBeginDate;
     @Bind(R.id.etEndDate) EditText etEndDate;
@@ -56,6 +58,7 @@ public class EditSettingsDialog extends DialogFragment{
         View view = inflater.inflate(R.layout.fragment_edit_settings,container, false);
         ButterKnife.bind(this, view);
 
+        //Text validation for begin date editText field
         TextWatcher twBeginDate = new TextWatcher() {
             private String current = "";
             private String mmddyyyy = "MMDDYYYY";
@@ -115,6 +118,7 @@ public class EditSettingsDialog extends DialogFragment{
             }
         };
 
+        //Text validation for end date editText field
         TextWatcher twEndDate = new TextWatcher() {
             private String current = "";
             private String mmddyyyy = "MMDDYYYY";
@@ -178,6 +182,7 @@ public class EditSettingsDialog extends DialogFragment{
         etEndDate.addTextChangedListener(twEndDate);
 
 
+        //Initialize shared preferences
         SharedPreferences preferences = getContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = preferences.edit();
 
@@ -190,7 +195,7 @@ public class EditSettingsDialog extends DialogFragment{
         cbSports.setChecked(preferences.getBoolean("sports", false));
 
 
-
+        //save filter settings to shared preferences
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

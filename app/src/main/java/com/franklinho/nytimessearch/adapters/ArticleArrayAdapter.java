@@ -37,6 +37,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         mArticles = articles;
     }
 
+    //Viewholder for text only items
     public class ViewHolderText extends RecyclerView.ViewHolder implements View.OnClickListener{
         @Bind(R.id.tvTitle) TextView tvTitle;
         private Context context;
@@ -50,6 +51,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             itemView.setOnClickListener(this);
         }
 
+        //Triggers ArticleActivity on click
         @Override
         public void onClick(View view) {
             int position = getLayoutPosition(); // gets item position
@@ -64,6 +66,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
+    //Viewholder for normal items
     public static class ViewHolderImageText extends  RecyclerView.ViewHolder  implements  View.OnClickListener {
         private Context context;
         public com.franklinho.nytimessearch.models.Article article;
@@ -102,6 +105,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public int getItemViewType(int position) {
         com.franklinho.nytimessearch.models.Article article = mArticles.get(position);
 
+        // Choose type of item depending on whether or not it has an image
         final String thumbnail;
         if (article.getMultimedia() != null && article.getMultimedia().size() > 0) {
             thumbnail = article.getMultimedia().get(0).getUrl();
@@ -124,7 +128,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-
+        //Leverage the correct Vieholder
         if (viewType == WITH_IMAGE) {
             View articleViewImageText = inflater.inflate(R.layout.item_article_result, parent, false);
             ViewHolderImageText vhImageText = new ViewHolderImageText(articleViewImageText);
@@ -140,6 +144,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
+        //Layout viewholders when binded. See configureImageTextViewHolder for layout
         switch (holder.getItemViewType()) {
             case WITH_IMAGE:
                 ViewHolderImageText vhImageText = (ViewHolderImageText) holder;
@@ -159,6 +164,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
+    //Lay out imageTextViewHolder
     private void configureImageTextViewHolder(final ViewHolderImageText vhImageText, int position) {
         com.franklinho.nytimessearch.models.Article article = mArticles.get(position);
         TextView textView = vhImageText.tvTitle;
@@ -186,6 +192,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
+    //Lay out textViewholder
     private void configureTextOnlyViewHolder(ViewHolderText vhText, int position) {
         com.franklinho.nytimessearch.models.Article article = mArticles.get(position);
         TextView textView = vhText.tvTitle;
