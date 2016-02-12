@@ -29,6 +29,7 @@ import com.franklinho.nytimessearch.EditSettingsDialog;
 import com.franklinho.nytimessearch.EndlessRecyclerViewScrollListener;
 import com.franklinho.nytimessearch.R;
 import com.franklinho.nytimessearch.SpacesItemDecoration;
+import com.franklinho.nytimessearch.models.NYTimesArticleResponse;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -48,7 +49,7 @@ public class SearchActivity extends AppCompatActivity {
 
     @Bind(R.id.rvResults) RecyclerView rvResults;
     String NYTIMES_API_KEY = "3c6aa034b9301a603f43fdc6ce4ef667:5:74335560";
-    ArrayList<Article> articles;
+    ArrayList<com.franklinho.nytimessearch.models.Article> articles;
     ArticleArrayAdapter adapter;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -227,12 +228,15 @@ public class SearchActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                    JSONArray articleJsonResults = null;
+//                    JSONArray articleJsonResults = null;
+                    String articleJsonResults = null;
                     try {
                         int curSize = articles.size();
-                        articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                        articleJsonResults = response.getJSONObject("response").toString();
                         if (articleJsonResults.length() > 0 && articleJsonResults != null) {
-                            articles.addAll(Article.fromJSONArray(articleJsonResults));
+//                            articles.addAll(Article.fromJSONArray(articleJsonResults));
+                            NYTimesArticleResponse articleResponse = NYTimesArticleResponse.parseJSON(articleJsonResults);
+                            articles.addAll(articleResponse.getArticles());
                             Log.d("DEBUG", articles.toString());
                             if (page > 0) {
                                 adapter.notifyItemRangeInserted(curSize, articles.size()-1);

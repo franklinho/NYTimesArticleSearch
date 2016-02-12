@@ -27,7 +27,7 @@ Time spent: 12 hours spent in total
     * :white_check_mark: Bonus: For different news articles that only have text or only have images, use Heterogenous Layouts with RecyclerView. (2 points)
     * :white_check_mark: Bonus: Apply the popular ButterKnife annotation library to reduce view boilerplate. (1 point)
     * :white_check_mark: Bonus: Use Parcelable instead of Serializable using the popular Parceler library. (1 point)
-    * :white_large_square: Bonus: Leverage the popular GSON library to streamline the parsing of JSON data. (1 point)
+    * :white_check_mark: Bonus: Leverage the popular GSON library to streamline the parsing of JSON data. (1 point)
     * :white_check_mark: Bonus: Replace Picasso with Glide for more efficient image rendering. (1 point)
   * The additional user stores were implemented:
     * Added hiding to the toolbar when scrolling
@@ -48,6 +48,7 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
   * Ran into issues with sharing webview url, but eventually figured it out
   * Utilized formatted edit text field with validation rather than datepicker
   * Had trouble utilizing a custom class, realized that the item has to be declared in the layout.
+  * Had to do some major refactoring to get GSON to work. Note that generating the models from the beginning would have been best.
 
 
 ## Open-source libraries used

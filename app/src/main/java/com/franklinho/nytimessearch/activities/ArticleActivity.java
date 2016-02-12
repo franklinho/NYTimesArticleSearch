@@ -12,7 +12,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ShareActionProvider;
 
-import com.franklinho.nytimessearch.Article;
 import com.franklinho.nytimessearch.R;
 
 import org.parceler.Parcels;
@@ -22,7 +21,7 @@ import butterknife.ButterKnife;
 
 public class ArticleActivity extends AppCompatActivity {
     @Bind(R.id.wvArticle) WebView wvArticle;
-    Article article;
+    com.franklinho.nytimessearch.models.Article article;
     private ShareActionProvider miShareAction;
 
     @Override
@@ -33,10 +32,10 @@ public class ArticleActivity extends AppCompatActivity {
 
 
 
-        article = (Article) Parcels.unwrap(getIntent().getParcelableExtra("article"));
+        article = (com.franklinho.nytimessearch.models.Article) Parcels.unwrap(getIntent().getParcelableExtra("article"));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(article.getHeadline());
+        toolbar.setTitle(article.getHeadline().getMain());
         setSupportActionBar(toolbar);
 
 

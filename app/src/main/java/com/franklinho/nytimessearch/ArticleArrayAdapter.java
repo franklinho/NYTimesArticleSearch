@@ -27,18 +27,18 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 //    public ArticleArrayAdapter(Context context, List<Article> articles) {
 //        super(context, android.R.layout.simple_list_item_1, articles);
 //    }
-    private List<Article> mArticles;
+    private List<com.franklinho.nytimessearch.models.Article> mArticles;
     private final int WITH_IMAGE = 0, TEXT_ONLY=1;
     public int viewWidth;
 
-    public ArticleArrayAdapter(List<Article> articles) {
+    public ArticleArrayAdapter(List<com.franklinho.nytimessearch.models.Article> articles) {
         mArticles = articles;
     }
 
     public class ViewHolderText extends RecyclerView.ViewHolder implements View.OnClickListener{
         @Bind(R.id.tvTitle) TextView tvTitle;
         private Context context;
-        public Article article;
+        public com.franklinho.nytimessearch.models.Article article;
 
 
         public ViewHolderText(View itemView) {
@@ -54,7 +54,8 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Intent i = new Intent(context, ArticleActivity.class);
             //get the article to display
             // pass article into intent
-            i.putExtra("article", Parcels.wrap(article));
+//            i.putExtra("article", Parcels.wrap(article));
+            i.putExtra("article", article);
             // launch the activity
             context.startActivity(i);
 
@@ -63,7 +64,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public static class ViewHolderImageText extends  RecyclerView.ViewHolder  implements  View.OnClickListener {
         private Context context;
-        public Article article;
+        public com.franklinho.nytimessearch.models.Article article;
         @Bind(R.id.tvTitle) TextView tvTitle;
         @Bind(R.id.ivImage) DynamicHeightImageView ivImage;
 //        DynamicHeightImageView ivImage;
@@ -96,13 +97,21 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
-        Article article = mArticles.get(position);
-        final String thumbnail = article.getThumbNail();
-        if (TextUtils.isEmpty(thumbnail) || thumbnail == null) {
-            return TEXT_ONLY;
+        com.franklinho.nytimessearch.models.Article article = mArticles.get(position);
+
+        final String thumbnail;
+        if (article.getMultimedia() != null && article.getMultimedia().size() > 0) {
+            thumbnail = article.getMultimedia().get(0).getUrl();
+            if (TextUtils.isEmpty(thumbnail) || thumbnail == null) {
+                return TEXT_ONLY;
+            } else {
+                return WITH_IMAGE;
+            }
         } else {
-            return WITH_IMAGE;
+            return TEXT_ONLY;
         }
+
+
     }
 
     @Override
@@ -148,42 +157,42 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private void configureImageTextViewHolder(final ViewHolderImageText vhImageText, int position) {
-        Article article = mArticles.get(position);
+        com.franklinho.nytimessearch.models.Article article = mArticles.get(position);
         TextView textView = vhImageText.tvTitle;
         vhImageText.article = article;
         final DynamicHeightImageView imageView;
         final String thumbnail;
 
-        if (article.getHeadline() != null) {
+        if (article.getHeadline().getMain() != null) {
             if (article.getSnippet() == null) {
-                textView.setText(article.getHeadline());
+                textView.setText(article.getHeadline().getMain());
             } else {
-                textView.setText(Html.fromHtml("<b>" + article.getHeadline() + "</b><br>" + " " + article.getSnippet()));
+                textView.setText(Html.fromHtml("<b>" + article.getHeadline().getMain() + "</b><br>" + " " + article.getSnippet()));
             }
         }
         imageView = vhImageText.ivImage;
 
         imageView.setImageResource(0);
-        thumbnail = article.getThumbNail();
+        thumbnail = article.getMultimedia().get(0).getUrl();
 
 
         if (!TextUtils.isEmpty(thumbnail)) {
-            imageView.setHeightRatio((double) article.getThumbNailHeight() / article.getThumbnailWidth());
+            imageView.setHeightRatio((double) article.getMultimedia().get(0).getHeight() / article.getMultimedia().get(0).getWidth());
             Picasso.with(vhImageText.context).load(thumbnail).fit().into(imageView);
         }
 
     }
 
     private void configureTextOnlyViewHolder(ViewHolderText vhText, int position) {
-        Article article = mArticles.get(position);
+        com.franklinho.nytimessearch.models.Article article = mArticles.get(position);
         TextView textView = vhText.tvTitle;
         vhText.article = article;
 
-        if (article.getHeadline() != null) {
+        if (article.getHeadline().getMain() != null) {
             if (article.getSnippet() == null) {
-                textView.setText(article.getHeadline());
+                textView.setText(article.getHeadline().getMain());
             } else {
-                textView.setText(Html.fromHtml("<b>" + article.getHeadline() + "</b><br>" + " " + article.getSnippet()));
+                textView.setText(Html.fromHtml("<b>" + article.getHeadline().getMain() + "</b><br>" + " " + article.getSnippet()));
             }
         }
     }
