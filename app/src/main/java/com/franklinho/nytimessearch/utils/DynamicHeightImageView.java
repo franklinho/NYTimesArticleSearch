@@ -1,4 +1,4 @@
-package com.franklinho.nytimessearch;
+package com.franklinho.nytimessearch.utils;
 
 import android.content.Context;
 import android.util.AttributeSet;

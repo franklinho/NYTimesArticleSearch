@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -23,18 +22,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.franklinho.nytimessearch.Article;
-import com.franklinho.nytimessearch.ArticleArrayAdapter;
-import com.franklinho.nytimessearch.EditSettingsDialog;
-import com.franklinho.nytimessearch.EndlessRecyclerViewScrollListener;
+
+import com.franklinho.nytimessearch.adapters.ArticleArrayAdapter;
+import com.franklinho.nytimessearch.fragments.EditSettingsDialog;
+import com.franklinho.nytimessearch.utils.EndlessRecyclerViewScrollListener;
 import com.franklinho.nytimessearch.R;
-import com.franklinho.nytimessearch.SpacesItemDecoration;
+import com.franklinho.nytimessearch.interfaces.SpacesItemDecoration;
 import com.franklinho.nytimessearch.models.NYTimesArticleResponse;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

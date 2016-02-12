@@ -1,4 +1,4 @@
-package com.franklinho.nytimessearch;
+package com.franklinho.nytimessearch.interfaces;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

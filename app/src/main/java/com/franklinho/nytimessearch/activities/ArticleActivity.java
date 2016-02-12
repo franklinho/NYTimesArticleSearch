@@ -8,8 +8,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 import android.widget.ShareActionProvider;
 
 import com.franklinho.nytimessearch.R;
@@ -23,6 +25,7 @@ public class ArticleActivity extends AppCompatActivity {
     @Bind(R.id.wvArticle) WebView wvArticle;
     com.franklinho.nytimessearch.models.Article article;
     private ShareActionProvider miShareAction;
+    @Bind(R.id.pB1) ProgressBar pB1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +42,25 @@ public class ArticleActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-
+        wvArticle.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int progress)
+            {
+                if(progress < 100 && pB1.getVisibility() == ProgressBar.GONE){
+                    pB1.setVisibility(ProgressBar.VISIBLE);
+                }
+                pB1.setProgress(progress);
+                if(progress == 100) {
+                    pB1.setVisibility(ProgressBar.GONE);
+                }
+            }
+        });
         wvArticle.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
             }
+
         });
         wvArticle.loadUrl(article.getWebUrl());
     }

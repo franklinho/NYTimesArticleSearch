@@ -1,4 +1,4 @@
-package com.franklinho.nytimessearch;
+package com.franklinho.nytimessearch.utils;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;

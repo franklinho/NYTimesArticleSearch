@@ -1,4 +1,4 @@
-package com.franklinho.nytimessearch;
+package com.franklinho.nytimessearch.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.franklinho.nytimessearch.utils.DynamicHeightImageView;
+import com.franklinho.nytimessearch.R;
 import com.franklinho.nytimessearch.activities.ArticleActivity;
 import com.squareup.picasso.Picasso;
 
@@ -66,7 +68,8 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private Context context;
         public com.franklinho.nytimessearch.models.Article article;
         @Bind(R.id.tvTitle) TextView tvTitle;
-        @Bind(R.id.ivImage) DynamicHeightImageView ivImage;
+        @Bind(R.id.ivImage)
+        DynamicHeightImageView ivImage;
 //        DynamicHeightImageView ivImage;
 
 

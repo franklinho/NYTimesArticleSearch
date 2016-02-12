@@ -2,7 +2,7 @@
 
 New York Times article search is an android app that allows a user to read NY Times articles by searching and filtering. The app utilizes the NYTimes API to display article images and headlines, and opens up the articles in a webview.
 
-Time spent: 12 hours spent in total
+Time spent: 14 hours spent in total
 
 ## User Stories
 

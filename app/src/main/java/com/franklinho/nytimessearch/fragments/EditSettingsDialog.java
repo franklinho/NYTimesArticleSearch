@@ -1,4 +1,4 @@
-package com.franklinho.nytimessearch;
+package com.franklinho.nytimessearch.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.franklinho.nytimessearch.R;
 import com.franklinho.nytimessearch.activities.SearchActivity;
 
 import java.util.Calendar;
