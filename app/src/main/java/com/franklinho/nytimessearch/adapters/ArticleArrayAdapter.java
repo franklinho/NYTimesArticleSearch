@@ -10,10 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.franklinho.nytimessearch.utils.DynamicHeightImageView;
+import com.bumptech.glide.Glide;
 import com.franklinho.nytimessearch.R;
 import com.franklinho.nytimessearch.activities.ArticleActivity;
-import com.squareup.picasso.Picasso;
+import com.franklinho.nytimessearch.utils.DynamicHeightImageView;
 
 import org.parceler.Parcels;
 
@@ -187,7 +187,8 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         if (!TextUtils.isEmpty(thumbnail)) {
             imageView.setHeightRatio((double) article.getMultimedia().get(0).getHeight() / article.getMultimedia().get(0).getWidth());
-            Picasso.with(vhImageText.context).load(thumbnail).fit().into(imageView);
+//            Picasso.with(vhImageText.context).load(thumbnail).fit().into(imageView);
+            Glide.with(vhImageText.context).load(thumbnail).fitCenter().into(imageView);
         }
 
     }
