@@ -196,16 +196,16 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
             }
 
             // Add filters for begin date and end date
-            String beingDateString = preferences.getString("beginDate","MM/DD/YYYY");
-            if (!beingDateString.equals("MM/DD/YYYY")) {
+            String beingDateString = preferences.getString("beginDate","");
+            if (!beingDateString.equals("")) {
                 String[] separated = beingDateString.split("/");
                 String queryString = separated[2] + separated[0] + separated[1];
                 Log.d("DEBUG", queryString);
                 params.add("begin_date",queryString);
             }
 
-            String endDateString = preferences.getString("endDate","MM/DD/YYYY");
-            if (!endDateString.equals("MM/DD/YYYY")) {
+            String endDateString = preferences.getString("endDate","");
+            if (!endDateString.equals("")) {
                 String[] separated = endDateString.split("/");
                 String queryString = separated[2] + separated[0] + separated[1];
                 Log.d("DEBUG", queryString);

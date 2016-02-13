@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +62,52 @@ public class EditSettingsDialog extends DialogFragment {
 
 
 
+        TextWatcher twBeginDate = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.equals("")) {
+                    btnBeginDateClear.setVisibility(View.VISIBLE);
+                } else {
+                    btnBeginDateClear.setVisibility(View.GONE);
+                }
+
+            }
+        };
+
+        TextWatcher twEndDate = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.equals("")) {
+                    btnEndDateClear.setVisibility(View.VISIBLE);
+                } else {
+                    btnEndDateClear.setVisibility(View.GONE);
+                }
+
+            }
+        };
+
+        etBeginDate.addTextChangedListener(twBeginDate);
+        etEndDate.addTextChangedListener(twEndDate);
 
 
         etBeginDate.setOnClickListener(new View.OnClickListener() {
@@ -87,13 +134,25 @@ public class EditSettingsDialog extends DialogFragment {
         final SharedPreferences.Editor editor = preferences.edit();
 
 
-        etBeginDate.setText(preferences.getString("beginDate","MM/DD/YYYY"));
-        etEndDate.setText(preferences.getString("endDate", "MM/DD/YYYY"));
+        etBeginDate.setText(preferences.getString("beginDate", ""));
+        etEndDate.setText(preferences.getString("endDate", ""));
         spnSortOrder.setSelection(preferences.getInt("newest", 0));
         cbArts.setChecked(preferences.getBoolean("arts", false));
         cbFashion.setChecked(preferences.getBoolean("fashion", false));
         cbSports.setChecked(preferences.getBoolean("sports", false));
 
+        if (!etBeginDate.getText().toString().equals("")) {
+            btnBeginDateClear.setVisibility(View.VISIBLE);
+        } else {
+            btnBeginDateClear.setVisibility(View.GONE);
+        }
+
+
+        if (!etEndDate.getText().toString().equals("")) {
+            btnEndDateClear.setVisibility(View.VISIBLE);
+        } else {
+            btnEndDateClear.setVisibility(View.GONE);
+        }
 
         //save filter settings to shared preferences
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +167,22 @@ public class EditSettingsDialog extends DialogFragment {
                 editor.commit();
 
                 dismiss();
+            }
+        });
+
+        btnBeginDateClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etBeginDate.setText("");
+                btnBeginDateClear.setVisibility(View.GONE);
+            }
+        });
+
+        btnEndDateClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etEndDate.setText("");
+                btnEndDateClear.setVisibility(View.GONE);
             }
         });
 
