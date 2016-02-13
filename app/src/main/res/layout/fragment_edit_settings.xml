@@ -19,13 +19,13 @@
         android:inputType="date"
         android:ems="10"
         android:id="@+id/etBeginDate"
+        android:focusable="false"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:layout_toRightOf="@+id/textView"
         android:layout_toEndOf="@+id/textView"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        />
 
 
     <TextView
@@ -42,12 +42,12 @@
         android:inputType="date"
         android:ems="10"
         android:id="@+id/etEndDate"
-        android:layout_alignParentEnd="true"
         android:layout_below="@id/etBeginDate"
+        android:focusable="false"
         android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,8 +55,9 @@
         android:text="@string/sort_order"
         android:id="@+id/tvSortOrder"
         android:layout_below="@+id/tvEndDate"
-        android:layout_toLeftOf="@+id/spinner"
-        android:layout_toStartOf="@+id/spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/spnSortOrder"
+        android:layout_toStartOf="@+id/spnSortOrder"
         android:layout_margin="10dp" />
 
     <Spinner
@@ -65,7 +66,7 @@
         android:id="@+id/spnSortOrder"
         android:layout_below="@+id/etEndDate"
         android:layout_alignRight="@+id/etEndDate"
-        android:layout_alignEnd="@+id/etEndDate"
+        android:layout_alignParentEnd="true"
         android:entries="@array/sort_orders"
         android:layout_alignLeft="@+id/etEndDate"
         android:layout_alignStart="@+id/etEndDate"
@@ -126,5 +127,31 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnBeginDateClear"
+        android:layout_alignBottom="@+id/etBeginDate"
+        android:layout_alignTop="@+id/etBeginDate"
+        android:layout_toRightOf="@+id/etBeginDate"
+        android:layout_alignParentRight="true"
+        android:layout_toEndOf="@+id/etBeginDate"
+        android:scaleType="fitCenter"
+        android:src="@drawable/clear_icon"
+        />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnEndDateClear"
+        android:layout_alignBottom="@+id/etEndDate"
+        android:layout_alignTop="@+id/etEndDate"
+        android:layout_toRightOf="@+id/etEndDate"
+        android:layout_toEndOf="@+id/etEndDate"
+        android:layout_alignParentRight="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/clear_icon"
+        />
 
 </RelativeLayout>

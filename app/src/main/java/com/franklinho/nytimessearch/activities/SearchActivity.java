@@ -1,5 +1,6 @@
 package com.franklinho.nytimessearch.activities;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -18,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -39,13 +41,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     @Bind(R.id.rvResults) RecyclerView rvResults;
     String NYTIMES_API_KEY = "3c6aa034b9301a603f43fdc6ce4ef667:5:74335560";
@@ -57,6 +61,8 @@ public class SearchActivity extends AppCompatActivity {
     @Bind(R.id.alertLayout) RelativeLayout alertLayout;
     @Bind(R.id.tvAlertText) TextView tvAlertText;
     @Bind(R.id.ivAlertImage) ImageView ivAlertImage;
+    EditSettingsDialog settingsDialog;
+    public String dateType;
 
 
 
@@ -162,7 +168,7 @@ public class SearchActivity extends AppCompatActivity {
     //Shows filters
     private void showSettingsDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        EditSettingsDialog settingsDialog = EditSettingsDialog.newInstance();
+        settingsDialog = EditSettingsDialog.newInstance();
         settingsDialog.show(fm, "fragment_edit_settings");
     }
 
@@ -308,4 +314,20 @@ public class SearchActivity extends AppCompatActivity {
         alertLayout.setVisibility(View.VISIBLE);
     }
 
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        final Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, monthOfYear);
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        if (dateType == "beginDate") {
+            settingsDialog.setBeginDate(format.format(c.getTime()));
+        } else if (dateType == "endDate") {
+            settingsDialog.setEndDate(format.format(c.getTime()));
+        }
+
+    }
 }
