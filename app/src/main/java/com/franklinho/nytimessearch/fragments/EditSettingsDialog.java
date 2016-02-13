@@ -61,7 +61,7 @@ public class EditSettingsDialog extends DialogFragment {
         ButterKnife.bind(this, view);
 
 
-
+        //Set up watchers to turn on clear buttons if there's text
         TextWatcher twBeginDate = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -109,7 +109,7 @@ public class EditSettingsDialog extends DialogFragment {
         etBeginDate.addTextChangedListener(twBeginDate);
         etEndDate.addTextChangedListener(twEndDate);
 
-
+        //Show datepicker if you click on begin date or end date fields
         etBeginDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,10 +190,7 @@ public class EditSettingsDialog extends DialogFragment {
         return view;
     }
 
-    public void showDatePicker(String dateType) {
-        DatePickerFragment newFragment = new DatePickerFragment().newInstance(dateType);
-        newFragment.show(getChildFragmentManager(),"datePicker");
-    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -206,6 +203,13 @@ public class EditSettingsDialog extends DialogFragment {
         searchActivity.requestArticles(0, searchActivity.sharedQuery);
     }
 
+    //Show date picker
+    public void showDatePicker(String dateType) {
+        DatePickerFragment newFragment = new DatePickerFragment().newInstance(dateType);
+        newFragment.show(getChildFragmentManager(), "datePicker");
+    }
+
+    //Functions that allow activity to change date fields
     public void setBeginDate(String string) {
         etBeginDate.setText(string);
         etBeginDate.clearFocus();
