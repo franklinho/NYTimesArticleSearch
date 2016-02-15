@@ -38,7 +38,7 @@ Time spent: 14 hours spent in total
 
 Here's a walkthrough of implemented user stories:
 
-![General Functionality](https://github.com/franklinho/NYTimesArticleSearch/blob/master/NYTimesArticleSearchWalkthrough.gif)
+![General Functionality](https://github.com/franklinho/NYTimesArticleSearch/blob/master/NYTimesArticleSearchWalkthroughUpdated.gif)
 
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
