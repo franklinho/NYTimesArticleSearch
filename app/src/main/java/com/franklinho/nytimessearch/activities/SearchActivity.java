@@ -316,7 +316,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
 
 
     @Override
-    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         final Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);

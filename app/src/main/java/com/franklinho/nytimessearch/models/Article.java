@@ -89,6 +89,8 @@ public class Article implements Serializable {
      * @return
      *     The headline
      */
+
+
     public Headline getHeadline() {
         return headline;
     }

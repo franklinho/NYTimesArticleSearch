@@ -4,13 +4,16 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.widget.DatePicker;
 
 import com.franklinho.nytimessearch.activities.SearchActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-public class DatePickerFragment extends DialogFragment {
+public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+    public String dateType;
 
     public static DatePickerFragment newInstance(String dateType) {
 
@@ -22,6 +25,23 @@ public class DatePickerFragment extends DialogFragment {
         return fragment;
     }
 
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        final Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, monthOfYear);
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        EditSettingsDialog editSettingsDialog = (EditSettingsDialog) getTargetFragment();
+
+        if (dateType.equals("beginDate")){
+            editSettingsDialog.setBeginDate(format.format(c.getTime()));
+        } else if (dateType.equals("endDate")) {
+            editSettingsDialog.setEndDate(format.format(c.getTime()));
+        }
+
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
